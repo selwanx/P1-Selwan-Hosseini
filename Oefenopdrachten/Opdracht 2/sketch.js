@@ -1,3 +1,5 @@
+let rng = 0
+
 function setup() {
   createCanvas(400, 400);
 }
@@ -17,7 +19,14 @@ score = 1;
   let vermenigvuldigen = a * b
   let delen = a / b
   text("optellen: " +  optellen, 20, 80)
-  text("optellen: " +  optellen, 20, 100)
-  text("optellen: " +  optellen, 20, 120)
-  text("optellen: " +  optellen, 20, 140)
+  text("aftrekken: " +  aftrekken, 20, 100)
+  text("vermenigvuldigen: " +  vermenigvuldigen, 20, 120)
+  text("delen: " +  delen, 20, 140)
+
+  text("rng: " + rng, 20, 160 )
 }
+
+function mousePressed() {
+   rng = random(0, 1000)
+    
+  }
