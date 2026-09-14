@@ -1,3 +1,5 @@
+let licht = 0;
+
 function setup() {
   createCanvas(800, 600);
 }
@@ -67,6 +69,7 @@ function draw() {
   rect(640, 350, 37, 100)
   rect(655, 435, 7, 100, 10)
 
+  if (licht == 0) {
   fill("#420000")
   circle(658, 370, 25)
   fill("#3d1f00")
@@ -129,4 +132,6 @@ function draw() {
   fill("#1f1f1f")
   circle(100, 570, 40)
   circle(190, 570, 40)
+
+  
 }
