@@ -1,5 +1,6 @@
 let licht = 0;
-let zon = 0;
+let zon = -250;
+let moon = -250;
 let cloud1 = 900;
 let cloud2 = 900;
 let sunsize1 = 120;
@@ -14,20 +15,43 @@ let car2 = 0;
 let carspeed2 = 2.5;
 let car3 = 0;
 let carspeed3 = 2.5;
-preload(function() {
-  loadSound("carhorn1.mp3", function(sound) {
-    carhorn1 = sound;
-  });
-});
+let anglesun = 0;
+let anglemoon = 180;
+let moonsize1 = 120;
+let moonsize2 = 100;
+let daynight = 0;
+let daycolor;
+let nightcolor;
+let horn;
+
+
+function preload() {
+  horn = loadSound("carhorn1.mp3")
+}
 
 function setup() {
   createCanvas(800, 600);
+  angleMode(DEGREES);
+  nightcolor = color("#020018");
+  daycolor = color("#7dafff");
 }
 
 function draw() {
-  background("#7dafff");
+  let t = Math.sin(anglesun / 360.0 * 2 * Math.PI) * 0.5 + 0.5
+  let daynightcolor = lerpColor(nightcolor, daycolor, t);
+  background(daynightcolor);
+
 
 //zon
+push()
+translate(400, 450);
+if (anglesun < 360) {
+  rotate(anglesun)
+}
+if (anglesun >= 360) {
+  anglesun = 0
+}
+  anglesun = anglesun + 0.25
   fill(254, 244, 113, 127)
   sunsize1 = 100 + Math.sin(frameCount * 0.05) * 20
   sunsize2 = 80 + Math.sin(frameCount * 0.05) * 20
@@ -36,7 +60,27 @@ function draw() {
    circle(zon + -120 - 0, 85, sunsize2)
   fill("#fdff94")
    circle(zon + -120, 85, 70)
-zon = frameCount % 1040
+pop()
+
+//maan
+push()
+translate(400, 450);
+if (anglemoon < 360) {
+  rotate(anglemoon)
+}
+if (anglemoon >= 360) {
+  anglemoon = 0
+}
+  anglemoon = anglemoon + 0.25
+  fill(237, 237, 237, 127)
+  moonsize1 = 80 + Math.sin(frameCount * 0.05) * 5
+  moonsize2 = 80 + Math.sin(frameCount * 0.05) * 5
+   circle(moon + -120, 85, moonsize1)
+  fill(245, 245, 245, 127)
+   circle(moon + -120 - 0, 85, moonsize2)
+  fill(255, 255, 255)
+   circle(moon + -120, 85, 70)
+pop()
  
   //clouds
   fill("#e0e0e0")
@@ -249,8 +293,8 @@ function keyPressed () {
     }
     }
 
-  if (keyCode == SPACE) {
-    playSound("carhorn1.mp3") 
+  if (keyCode == 32) {
+    playSound(horn) 
   }
 }
 
