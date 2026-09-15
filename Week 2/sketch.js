@@ -253,3 +253,12 @@ function keyPressed () {
     playSound("carhorn1.mp3") 
   }
 }
+
+function keyPressed () {
+  if (keyCode == ENTER) {
+    licht = licht + 1
+    if (licht > 2) {
+      licht = 0
+    }
+    }
+  }

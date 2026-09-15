@@ -112,3 +112,12 @@ image(image1, 300, 250, 200, 200)
 function preload() {
   image1 = loadImage("umbeo.jpg");
 }
+
+function keyPressed () {
+  if (keyCode == ENTER) {
+    licht = licht + 1
+    if (licht > 2) {
+      licht = 0
+    }
+    }
+  }
