@@ -8,6 +8,17 @@ let treemove1 = 0;
 let treemove2 = 0;
 let treemove3 = 0;
 let treemove4 = 0;
+let car1 = 0;
+let carspeed1 = 3;
+let car2 = 0;
+let carspeed2 = 2.5;
+let car3 = 0;
+let carspeed3 = 2.5;
+preload(function() {
+  loadSound("carhorn1.mp3", function(sound) {
+    carhorn1 = sound;
+  });
+});
 
 function setup() {
   createCanvas(800, 600);
@@ -141,7 +152,74 @@ cloud2 = frameCount % 1850;
    fill("#004700")
   circle(treemove4 + 470, 380, 85)
     
-   //boom 4
+  treemove1 = 0 + Math.sin(frameCount * 0.075) * 5
+  treemove2 = 0 + Math.sin(frameCount * 0.05) * 4
+  treemove3 = 0 + Math.sin(frameCount * 0.1) * 2
+  treemove4 = 0 + Math.sin(frameCount * 0.05) * 3
+
+if (licht == 0 && car1 == 300 ) {
+  carspeed1 = 0
+} if (licht == 0 && car2 == 300 + 100 )  {
+  carspeed2 = 0
+} if (licht == 0 && car3 == 300 - 75 ) {
+  carspeed3 = 0
+}
+  
+if (licht == 2) {
+  carspeed1 = 2.5
+} if (licht == 2)  {
+  carspeed2 = 2.5
+} if (licht == 2) {
+  carspeed3 = 2.5
+}
+
+if (licht == 1) {
+  carspeed1 = 3.5
+} if (licht == 1)  {
+  carspeed2 = 3.5
+} if (licht == 1) {
+  carspeed3 = 4.5
+}
+
+//auto 1
+  fill("#cb4967")
+  rect(car1 + 300, 470, 100, 75)
+   rect(car1 + 315, 500, 115, 45, 15, 15, 1, 1)
+  fill("#1f1f1f")
+  circle(car1 + 320, 550, 40)
+  circle(car1 + 410, 550, 40)
+  car1 = car1 + carspeed1
+  if (car1 >= 950) {
+    car1 = -450
+  }
+  
+  //auto 2
+  fill("#5c21d1")
+  rect(car2 + -100, 490, 100, 75)
+   rect(car2 + -85, 520, 115, 45, 15, 15, 1, 1)
+  fill("#1f1f1f")
+  circle(car2 + -80, 570, 40)
+  circle(car2 + 10, 570, 40)
+car2 = car2 + carspeed2
+  if (car2 >= 950) {
+    car2 = -350
+  }
+
+  //auto 3
+    fill("#57ffb6")
+  rect(car3 + 280, 490, 100, 75)
+   rect(car3 + 295, 520, 115, 45, 15, 15, 1, 1)
+  fill("#1f1f1f")
+  circle(car3 + 300, 570, 40)
+  circle(car3 + 390, 570, 40)
+car3 = car3 + carspeed3
+  if (car3 >= 950) {
+    car3 = -450
+  }
+
+  
+
+//boom 4
    fill("#523320")
   rect(330, 525, 17.5, 120)
   fill("#005e00")
@@ -156,14 +234,10 @@ cloud2 = frameCount % 1850;
   treemove2 = 0 + Math.sin(frameCount * 0.05) * 4
   treemove3 = 0 + Math.sin(frameCount * 0.1) * 2
   treemove4 = 0 + Math.sin(frameCount * 0.05) * 3
-    
-  //auto 1
-  fill("#5c21d1")
-  rect(80, 490, 100, 75)
-   rect(95, 520, 115, 45, 15, 15, 1, 1)
-  fill("#1f1f1f")
-  circle(100, 570, 40)
-  circle(190, 570, 40)
+
+
+
+
   
 }
 
@@ -174,4 +248,8 @@ function keyPressed () {
       licht = 0
     }
     }
+
+  if (keyCode == SPACE) {
+    playSound("carhorn1.mp3") 
+  }
 }
