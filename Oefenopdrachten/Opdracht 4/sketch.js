@@ -1,7 +1,7 @@
 let score = 0;
 let licht = 0;
-let xBall = 600;
-let yBall = 200;
+let xBall = 0;
+let yBall = 0;
 
 function keyPressed () {
   if (keyCode == ENTER) {
@@ -68,13 +68,24 @@ if (score === 500) {
   circle(118, 430, 25)
 
   fill(0);
-circle(600, 200, 150);
+circle(600 + xBall, 200 + yBall, 150);
 fill(255);
-circle(600, 200, 100);
+circle(600 + xBall, 200 + yBall, 100);
 fill(0);
 textSize(50);
-text("8", 587, 215);
+text("8", 587 + xBall, 215 + yBall);
+
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+    xBall = xBall - 10;
+  }
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+    xBall = xBall + 10;
+  }
+  if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+    yBall = yBall - 10;
+  }
+  if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+    yBall = yBall + 10;
+  }   
 
 }
-
-

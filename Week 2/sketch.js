@@ -254,11 +254,3 @@ function keyPressed () {
   }
 }
 
-function keyPressed () {
-  if (keyCode == ENTER) {
-    licht = licht + 1
-    if (licht > 2) {
-      licht = 0
-    }
-    }
-  }
