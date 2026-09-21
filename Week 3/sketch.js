@@ -58,8 +58,8 @@ if (blockI == 0) {
 
 }
 
-function keyPressed() {
-  if (keyCode == ENTER) {
+function mousePressed() {
+  if ( mouseX > 80 && mouseX < 150 && mouseY > 80 && mouseY < 150) {
     blockA = 0
     blockB = 0
     blockC = 0
