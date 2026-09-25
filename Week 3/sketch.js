@@ -9,13 +9,27 @@ let blockH = 0;
 let blockI = 0;
 let players = 0;
 
+let gameOver = false;
+let winner = 0;
+
 function setup() {
   createCanvas(400, 400);
 }
 
 function draw() {
-  background(150);
 
+  // Background 
+  if (gameOver == false) {
+    if (players == 0) {
+      background("#54a4ff");
+    } else {
+      background("#ff5274");
+    }
+  } else {
+    background(150);
+  }
+
+  // Board
   fill("black")
   rect(75, 75, 240, 240, 15)
 
@@ -128,10 +142,54 @@ function draw() {
     rect(240, 240, 70, 70, 15)
   }
 
+  // Check for winner
+  checkWinner();
+
+  // Turn winner text
+  textAlign(CENTER, CENTER);
+  textSize(25);
+  textStyle(BOLD);
+
+  if (gameOver == false) {
+    if (players == 0) {
+      fill("white");
+      text("BLUE'S TURN", 200, 40);
+    } else {
+      fill("white");
+      text("RED'S TURN", 200, 40);
+    }
+  }
+
+  // Game over text
+  if (gameOver == true) {
+    fill("white");
+    textSize(28);
+
+    if (winner == 1) {
+      text("BLUE WINS!", 200, 40);
+    }
+
+    if (winner == 2) {
+      text("RED WINS!", 200, 40);
+    }
+
+    if (winner == 3) {
+      text("DRAW!", 200, 40);
+    }
+
+    textSize(16);
+    text("PRESS SPACE TO RESTART", 200, 350);
+  }
 }
+
 
 function mousePressed() {
   if (mouseButton == "left") {
+
+    if (gameOver == true) {
+      return;
+    }
+
     if (mouseX >= 80 && mouseX <= 150 && mouseY >= 80 && mouseY <= 150 && blockA == 0) {
       players = (players + 1) % 2;
       blockA = players + 1;
@@ -179,6 +237,7 @@ function mousePressed() {
   }
 }
 
+
 function keyPressed() {
   if (keyCode == 32) {
     blockA = 0
@@ -191,5 +250,59 @@ function keyPressed() {
     blockH = 0
     blockI = 0
     players = 0
+
+    // Reset game
+    gameOver = false;
+    winner = 0;
+  }
+}
+
+function checkWinner() {
+
+  // BLUE wins
+  if (
+    (blockA == 1 && blockB == 1 && blockC == 1) ||
+    (blockD == 1 && blockE == 1 && blockF == 1) ||
+    (blockG == 1 && blockH == 1 && blockI == 1) ||
+    (blockA == 1 && blockD == 1 && blockG == 1) ||
+    (blockB == 1 && blockE == 1 && blockH == 1) ||
+    (blockC == 1 && blockF == 1 && blockI == 1) ||
+    (blockA == 1 && blockE == 1 && blockI == 1) ||
+    (blockC == 1 && blockE == 1 && blockG == 1)
+  ) {
+    gameOver = true;
+    winner = 1;
+  }
+
+  // RED wins
+  if (
+    (blockA == 2 && blockB == 2 && blockC == 2) ||
+    (blockD == 2 && blockE == 2 && blockF == 2) ||
+    (blockG == 2 && blockH == 2 && blockI == 2) ||
+    (blockA == 2 && blockD == 2 && blockG == 2) ||
+    (blockB == 2 && blockE == 2 && blockH == 2) ||
+    (blockC == 2 && blockF == 2 && blockI == 2) ||
+    (blockA == 2 && blockE == 2 && blockI == 2) ||
+    (blockC == 2 && blockE == 2 && blockG == 2)
+  ) {
+    gameOver = true;
+    winner = 2;
+  }
+
+  // Draw
+  if (
+    blockA != 0 &&
+    blockB != 0 &&
+    blockC != 0 &&
+    blockD != 0 &&
+    blockE != 0 &&
+    blockF != 0 &&
+    blockG != 0 &&
+    blockH != 0 &&
+    blockI != 0 &&
+    gameOver == false
+  ) {
+    gameOver = true;
+    winner = 3;
   }
 }
