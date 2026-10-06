@@ -1,4 +1,3 @@
-// lege lijsten
 let colors = [];
 
 let rectTimers = [];
@@ -9,15 +8,16 @@ let rectPositions = [];
 let circlePositions = [];
 let diamondPositions = [];
 
+let abstractArt = false;
+let backgroundColor = "#fad8ff";
+
 function setup() {
   createCanvas(800, 600);
 
   for (let i = 0; i < 100; i++) {
 
-    // kleuren voor de vormen
     colors.push([random(147), random(107), random(255)]);
 
-    // beginposities van de vormen
     rectPositions.push([
       random(0, 750),
       random(0, 500),
@@ -37,7 +37,6 @@ function setup() {
       50
     ]);
 
-    // startwaarden van de timers
     rectTimers.push(random(0, 180));
     circleTimers.push(random(0, 180));
     diamondTimers.push(random(0, 180));
@@ -45,69 +44,167 @@ function setup() {
 }
 
 function draw() {
-  background("#0a0a0a");
+  background(backgroundColor);
 
-  for (let i = 0; i < 6; i++) {
-    fill(colors[i]);
+  if (abstractArt == false) {
 
-    // timer van de rechthoek
-    rectTimers[i]--;
+    for (let i = 0; i < 6; i++) {
+      fill(colors[i]);
 
-    if (rectTimers[i] <= 0) {
-      rectPositions[i][1] += 3;
+      rectTimers[i]--;
+
+      if (rectTimers[i] <= 0) {
+        rectPositions[i][1] += 3;
+      }
+
+      circleTimers[i]--;
+
+      if (circleTimers[i] <= 0) {
+        circlePositions[i][1] += 3;
+      }
+
+      diamondTimers[i]--;
+
+      if (diamondTimers[i] <= 0) {
+        diamondPositions[i][1] += 3;
+      }
+
+      rect(...rectPositions[i]);
+      circle(...circlePositions[i]);
+
+      let x = diamondPositions[i][0];
+      let y = diamondPositions[i][1];
+      let size = diamondPositions[i][2];
+
+      beginShape();
+      vertex(x, y - size);
+      vertex(x + size, y);
+      vertex(x, y + size);
+      vertex(x - size, y);
+      endShape(CLOSE);
+
+      if (rectPositions[i][1] > height) {
+        rectPositions[i][0] = random(0, 750);
+        rectPositions[i][1] = random(-100, 0);
+        rectTimers[i] = random(60, 180);
+      }
+
+      if (circlePositions[i][1] > 850) {
+        circlePositions[i][0] = random(0, 750);
+        circlePositions[i][1] = random(-100, 0);
+        circleTimers[i] = random(60, 180);
+      }
+
+      if (diamondPositions[i][1] > 850) {
+        diamondPositions[i][0] = random(0, 750);
+        diamondPositions[i][1] = random(-100, 0);
+        diamondTimers[i] = random(60, 120);
+      }
     }
 
-    // timer van de cirkel
-    circleTimers[i]--;
+  } else {
 
-    if (circleTimers[i] <= 0) {
-      circlePositions[i][1] += 3;
+    // cirkels
+    for (let i = 0; i < 10; i++) {
+      fill(colors[i]);
+
+      circle(
+        circlePositions[i][0],
+        circlePositions[i][1],
+        circlePositions[i][2]
+      );
+
+      circlePositions[i][1] += 2;
+
+      if (circlePositions[i][1] > height + 50) {
+        circlePositions[i][0] = random(width);
+        circlePositions[i][1] = random(-200, -50);
+        circlePositions[i][2] = random(20, 100);
+        colors[i] = [random(255), random(255), random(255)];
+      }
     }
 
-    // timer van de ruit
-    diamondTimers[i]--;
+    // rechthoeken
+    for (let i = 0; i < 10; i++) {
+      fill(colors[i + 10]);
 
-    if (diamondTimers[i] <= 0) {
-      diamondPositions[i][1] += 3;
+      rect(
+        rectPositions[i + 10][0],
+        rectPositions[i + 10][1],
+        rectPositions[i + 10][2],
+        rectPositions[i + 10][3]
+      );
+
+      rectPositions[i + 10][1] += 2;
+
+      if (rectPositions[i + 10][1] > height + 80) {
+        rectPositions[i + 10][0] = random(width);
+        rectPositions[i + 10][1] = random(-200, -50);
+        rectPositions[i + 10][2] = random(30, 80);
+        rectPositions[i + 10][3] = random(30, 80);
+        colors[i + 10] = [random(255), random(255), random(255)];
+      }
     }
 
-    // teken de rechthoek
-    rect(...rectPositions[i]);
+    // ruiten
+    for (let i = 0; i < 10; i++) {
+      fill(colors[i + 20]);
 
-    // teken de cirkel
-    circle(...circlePositions[i]);
+      let x = diamondPositions[i + 20][0];
+      let y = diamondPositions[i + 20][1];
+      let size = diamondPositions[i + 20][2];
 
-    // punten van de ruit
-    let x = diamondPositions[i][0];
-    let y = diamondPositions[i][1];
-    let size = diamondPositions[i][2];
+      beginShape();
+      vertex(x, y - size);
+      vertex(x + size, y);
+      vertex(x, y + size);
+      vertex(x - size, y);
+      endShape(CLOSE);
 
-    beginShape();
-    vertex(x, y - size);
-    vertex(x + size, y);
-    vertex(x, y + size);
-    vertex(x - size, y);
-    endShape(CLOSE);
+      diamondPositions[i + 20][1] += 2;
 
-    // reset de rechthoek zodra deze uit beeld is
-    if (rectPositions[i][1] > height) {
-      rectPositions[i][0] = random(0, 750);
-      rectPositions[i][1] = random(-100, 0);
-      rectTimers[i] = random(60, 180);
+      if (diamondPositions[i + 20][1] > height + 60) {
+        diamondPositions[i + 20][0] = random(width);
+        diamondPositions[i + 20][1] = random(-200, -50);
+        diamondPositions[i + 20][2] = random(30, 60);
+        colors[i + 20] = [random(255), random(255), random(255)];
+      }
     }
+  }
+}
 
-    // reset de cirkel als deze onderaan verdwijnt
-    if (circlePositions[i][1] > 850) {
-      circlePositions[i][0] = random(0, 750);
-      circlePositions[i][1] = random(-100, 0);
-      circleTimers[i] = random(60, 180);
-    }
+function keyPressed() {
+  if (keyCode == BACKSPACE) {
 
-    // reset de ruit wanneer hij uit beeld gaat
-    if (diamondPositions[i][1] > 850) {
-      diamondPositions[i][0] = random(0, 750);
-      diamondPositions[i][1] = random(-100, 0);
-      diamondTimers[i] = random(60, 120);
+    abstractArt = true;
+
+    // nieuwe achtergrondkleur
+    backgroundColor = color(
+      random(255),
+      random(255),
+      random(255)
+    );
+
+    for (let i = 0; i < 30; i++) {
+
+      colors[i] = [
+        random(255),
+        random(255),
+        random(255)
+      ];
+
+      circlePositions[i][0] = random(width);
+      circlePositions[i][1] = random(-600, 600);
+      circlePositions[i][2] = random(20, 100);
+
+      rectPositions[i][0] = random(width);
+      rectPositions[i][1] = random(-600, 600);
+      rectPositions[i][2] = random(30, 80);
+      rectPositions[i][3] = random(30, 80);
+
+      diamondPositions[i][0] = random(width);
+      diamondPositions[i][1] = random(-600, 600);
+      diamondPositions[i][2] = random(30, 60);
     }
   }
 }
