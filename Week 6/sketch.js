@@ -27,11 +27,23 @@ let playButton;
 let lastStatDecrease = 0;
 let decreaseInterval = 1000;
 let playimage;
+let music;
+let eatingSound;
+let clickSound;
+let deathScreenImage;
+let deathSound;
+let isDead = false;
+let deathSoundPlayed = false;
+let respawnButton;
 
 let debug = true;
 
 function setup() {
   createCanvas(1200, 600);
+
+  userStartAudio();
+  music.setVolume(0.5);
+  music.loop();
 
   loadData();
   lastStatDecrease = millis();
@@ -42,6 +54,7 @@ function setup() {
   leftButton.size(50, 50);
   leftButton.mousePressed(() => {
     room = (room + 2) % 3;
+    clickSound.play();
   });
 
   rightButton = createImg("actualrotateright.png");
@@ -49,6 +62,7 @@ function setup() {
   rightButton.size(50, 50);
   rightButton.mousePressed(() => {
     room = (room + 1) % 3;
+    clickSound.play();
   });
 
   // Shower button
@@ -58,6 +72,7 @@ function setup() {
   showerButton.mousePressed(() => {
     cleanliness = min(140, cleanliness + 20);
     saveData();
+    clickSound.play();
   });
 
   // Eat button
@@ -67,6 +82,8 @@ function setup() {
   eatButton.mousePressed(() => {
     hunger = min(140, hunger + 20);
     saveData();
+    eatingSound.play();
+    clickSound.play();
   });
 
   // Play button
@@ -76,6 +93,35 @@ function setup() {
   playButton.mousePressed(() => {
     happiness = min(140, happiness + 20);
     saveData();
+    clickSound.play();
+  });
+
+  respawnButton = createButton("RESPAWN");
+  respawnButton.position(width / 2 - 75, height * 0.75);
+  respawnButton.size(150, 50);
+  respawnButton.hide();
+
+  respawnButton.mousePressed(() => {
+    happiness = 120;
+    hunger = 120;
+    cleanliness = 120;
+
+    isDead = false;
+    deathSoundPlayed = false;
+
+    lastStatDecrease = millis();
+
+    saveData();
+    respawnButton.hide();
+
+    leftButton.show();
+    rightButton.show();
+
+    updateActionButtons();
+
+    if (music && !music.isPlaying()) {
+      music.loop();
+    }
   });
 
 }
@@ -101,6 +147,35 @@ function preload() {
   bathroom = loadImage("bathroom.gif");
   selsit = loadImage("selwansit.png");
   selwanlook = loadImage("selwanlook.png");
+  music = loadSound("ost.mp3");
+  eatingSound = loadSound("eating.mp3");
+  clickSound = loadSound("clicksound.mp3")
+  deathScreenImage = loadImage("deathscreen.png");
+  deathSound = loadSound("death.mp3");
+}
+
+function deathScreen() {
+  // Stop the background music and play the death sound once
+  if (!deathSoundPlayed) {
+    if (music && music.isPlaying()) {
+      music.stop();
+    }
+
+    deathSound.play();
+    deathSoundPlayed = true;
+
+    // Hide all game buttons
+    leftButton.hide();
+    rightButton.hide();
+    showerButton.hide();
+    eatButton.hide();
+    playButton.hide();
+
+    respawnButton.show();
+  }
+
+  // Display the death screen
+  image(deathScreenImage, 0, 0, width, height);
 }
 
 function updateActionButtons() {
@@ -199,6 +274,17 @@ function drawCleanliness() {
 }
 
 function draw() {
+  // Check if all stats have reached zero
+  if (happiness <= 0 && hunger <= 0 && cleanliness <= 0) {
+    isDead = true;
+  }
+
+  // Show only the death screen when dead
+  if (isDead) {
+    deathScreen();
+    return;
+  }
+
   decreaseStats();
 
   if (room === 0) {
@@ -215,15 +301,6 @@ function draw() {
   drawCleanliness();
 }
 
-function roombedroom() {
-  background(bedroom);
-  image(selStand, 300, 100, 600, 750);
-
-  fill(255);
-  textSize(16);
-
-  drawStats();
-}
 
 function roomkitchen() {
   background(kitchen);
