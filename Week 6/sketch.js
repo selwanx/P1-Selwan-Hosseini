@@ -35,6 +35,21 @@ let deathSound;
 let isDead = false;
 let deathSoundPlayed = false;
 let respawnButton;
+let deathmusic;
+let voiceLines = [];
+let voiceTexts = [
+  "you're lowkey ugly",
+  "sooo.. you got any hobbies?",
+  "don't you have anything better to do?",
+  "im so bored dude",
+  "you're really annoying"
+];
+
+let isJumping = false;
+let jumpStart = 0;
+let jumpDuration = 400;
+let speechText = "";
+let speechUntil = 0;
 
 let debug = true;
 
@@ -96,9 +111,9 @@ function setup() {
     clickSound.play();
   });
 
-  respawnButton = createButton("RESPAWN");
-  respawnButton.position(width / 2 - 75, height * 0.75);
-  respawnButton.size(150, 50);
+  respawnButton = createImg("respawnimg.png");
+  respawnButton.size(350, 125);
+  respawnButton.position(425, 400);
   respawnButton.hide();
 
   respawnButton.mousePressed(() => {
@@ -108,20 +123,19 @@ function setup() {
 
     isDead = false;
     deathSoundPlayed = false;
-
     lastStatDecrease = millis();
+    deathmusic.stop();
 
     saveData();
+
     respawnButton.hide();
 
     leftButton.show();
     rightButton.show();
 
-    updateActionButtons();
+    music.loop();
 
-    if (music && !music.isPlaying()) {
-      music.loop();
-    }
+    updateActionButtons();
   });
 
 }
@@ -152,30 +166,14 @@ function preload() {
   clickSound = loadSound("clicksound.mp3")
   deathScreenImage = loadImage("deathscreen.png");
   deathSound = loadSound("death.mp3");
-}
-
-function deathScreen() {
-  // Stop the background music and play the death sound once
-  if (!deathSoundPlayed) {
-    if (music && music.isPlaying()) {
-      music.stop();
-    }
-
-    deathSound.play();
-    deathSoundPlayed = true;
-
-    // Hide all game buttons
-    leftButton.hide();
-    rightButton.hide();
-    showerButton.hide();
-    eatButton.hide();
-    playButton.hide();
-
-    respawnButton.show();
-  }
-
-  // Display the death screen
-  image(deathScreenImage, 0, 0, width, height);
+  deathmusic = loadSound("deathmusic.mp3")
+  voiceLines = [
+    loadSound("voiceline1.wav"),
+    loadSound("voiceline2.wav"),
+    loadSound("voiceline3.wav"),
+    loadSound("voiceline4.wav"),
+    loadSound("voiceline5.wav")
+  ];
 }
 
 function updateActionButtons() {
@@ -189,6 +187,27 @@ function updateActionButtons() {
     eatButton.show();
   } else if (room === 2) {
     showerButton.show();
+  }
+}
+
+function roomDeath() {
+  image(deathScreenImage, 0, 0, width, height);
+
+  if (!deathSoundPlayed) {
+    music.stop();
+    deathSound.setVolume(2)
+    deathSound.play();
+    deathmusic.setVolume(0.4)
+    deathmusic.loop();
+    deathSoundPlayed = true;
+
+    leftButton.hide();
+    rightButton.hide();
+    showerButton.hide();
+    eatButton.hide();
+    playButton.hide();
+
+    respawnButton.show();
   }
 }
 
@@ -274,14 +293,12 @@ function drawCleanliness() {
 }
 
 function draw() {
-  // Check if all stats have reached zero
   if (happiness <= 0 && hunger <= 0 && cleanliness <= 0) {
     isDead = true;
   }
 
-  // Show only the death screen when dead
   if (isDead) {
-    deathScreen();
+    roomDeath();
     return;
   }
 
@@ -299,8 +316,32 @@ function draw() {
   drawHearts();
   drawHunger();
   drawCleanliness();
+  if (room === 0) {
+  drawVoiceText();
+}
 }
 
+function roombedroom() {
+  background(bedroom);
+  let jumpHeight = 0;
+
+  if (isJumping) {
+    let progress = (millis() - jumpStart) / jumpDuration;
+
+    if (progress >= 1) {
+      isJumping = false;
+    } else {
+      jumpHeight = sin(progress * PI) * 50;
+    }
+  }
+
+  image(selStand, 300, 100 - jumpHeight, 600, 750);
+
+  fill(255);
+  textSize(16);
+
+  drawStats();
+}
 
 function roomkitchen() {
   background(kitchen);
@@ -329,4 +370,52 @@ function drawStats() {
 
   fill("#9f6bff");
   text("1", 360, 102);
+}
+
+function mousePressed() {
+  if (room !== 0 || isDead) {
+    return;
+  }
+
+  if (
+    mouseX >= 300 &&
+    mouseX <= 900 &&
+    mouseY >= 100 &&
+    mouseY <= 600
+  ) {
+    // Laat Selwan springen
+    isJumping = true;
+    jumpStart = millis();
+
+    // Stop eventuele vorige voicelines
+    for (let sound of voiceLines) {
+      sound.stop();
+    }
+
+    // Kies een willekeurige voiceline
+    let randomIndex = floor(random(voiceLines.length));
+
+    // Speel het geluid af
+    voiceLines[randomIndex].play();
+
+    // Toon de bijbehorende tekst gedurende 1 seconde
+    speechText = voiceTexts[randomIndex];
+    speechUntil = millis() + max(1000, speechText.length * 60);
+  }
+}
+
+function drawVoiceText() {
+  if (speechText === "" || millis() > speechUntil) {
+    return;
+  }
+
+  textFont(mcfont);
+  textSize(15);
+  textAlign(CENTER, CENTER);
+
+  // Tekst boven Selwan
+  fill("white");
+  text(speechText, 600, 60);
+
+  textAlign(LEFT, BASELINE);
 }
