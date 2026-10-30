@@ -50,6 +50,9 @@ let jumpStart = 0;
 let jumpDuration = 400;
 let speechText = "";
 let speechUntil = 0;
+let stinkygif
+let hungryBubble;
+let happinessBubble;
 
 let debug = true;
 
@@ -174,6 +177,9 @@ function preload() {
     loadSound("voiceline4.wav"),
     loadSound("voiceline5.wav")
   ];
+  stinkygif = loadImage("stinky.gif")
+  hungryBubble = loadImage("hungry.png");
+  happinessBubble = loadImage("happiness.png");
 }
 
 function updateActionButtons() {
@@ -316,9 +322,12 @@ function draw() {
   drawHearts();
   drawHunger();
   drawCleanliness();
+  drawStinky();
+  drawHungryBubble();
+  drawHappinessBubble();
   if (room === 0) {
-  drawVoiceText();
-}
+    drawVoiceText();
+  }
 }
 
 function roombedroom() {
@@ -418,4 +427,49 @@ function drawVoiceText() {
   text(speechText, 600, 60);
 
   textAlign(LEFT, BASELINE);
+}
+
+function drawStinky() {
+  if (cleanliness <= 60) {
+    if (room === 0) {
+      // slaapkamer
+      image(stinkygif, 550, 50, 100, 100);
+    } else if (room === 1) {
+      // keuken
+      image(stinkygif, 360, 200, 100, 100);
+    } else if (room === 2) {
+      // badkamer
+      image(stinkygif, 450, 100, 100, 100);
+    }
+  }
+}
+
+function drawHungryBubble() {
+  if (hunger <= 60) {
+    if (room === 0) {
+      // bedroom
+      image(hungryBubble, 700, 150, 100, 100);
+    } else if (room === 1) {
+      // kitchen
+      image(hungryBubble, 450, 200, 100, 100);
+    } else if (room === 2) {
+      // bathroom
+      image(hungryBubble, 550, 100, 100, 100);
+    }
+  }
+}
+
+function drawHappinessBubble() {
+  if (happiness <= 60) {
+    if (room === 0) {
+      // bedroom
+      image(happinessBubble, 400, 150, 100, 100);
+    } else if (room === 1) {
+      // kitchen
+      image(happinessBubble, 250, 200, 100, 100);
+    } else if (room === 2) {
+      // bathroom
+      image(happinessBubble, 330, 150, 100, 100);
+    }
+  }
 }
